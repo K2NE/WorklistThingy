@@ -31,6 +31,9 @@ namespace WorklistThingy
                 while (kInfo.KeyChar != 'q')
                 {
                     WorklistCriteria wc = new WorklistCriteria();
+                    wc.AddFilterField(WCLogical.Or, WCField.WorklistItemOwner, "Me", WCCompare.Equal, WCWorklistItemOwner.Me); //This will return all the user’s items
+                    wc.AddFilterField(WCLogical.Or, WCField.WorklistItemOwner, "Other", WCCompare.Equal, WCWorklistItemOwner.Other); //This will return all the user’s shared items (out of office items)
+  
                     if (!string.IsNullOrEmpty(filter))
                     {
                         wc.AddFilterField(WCField.ProcessFolio, WCCompare.Like, filter);
