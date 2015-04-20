@@ -33,7 +33,11 @@ namespace WorklistThingy
                     WorklistCriteria wc = new WorklistCriteria();
                     wc.AddFilterField(WCLogical.Or, WCField.WorklistItemOwner, "Me", WCCompare.Equal, WCWorklistItemOwner.Me); //This will return all the user’s items
                     wc.AddFilterField(WCLogical.Or, WCField.WorklistItemOwner, "Other", WCCompare.Equal, WCWorklistItemOwner.Other); //This will return all the user’s shared items (out of office items)
-  
+
+                    // If you assign a task to a group and "create a slot for each destination" and a first user claims the task, then that claimed task will show up in the workflows due to the above filter.
+                    // The below filter will 'remove' that.
+                    //wc.AddFilterField(WCLogical.And, WCField.WorklistItemStatus, WCCompare.NotEqual, WorklistStatus.Allocated);
+
                     if (!string.IsNullOrEmpty(filter))
                     {
                         wc.AddFilterField(WCField.ProcessFolio, WCCompare.Like, filter);
@@ -44,12 +48,12 @@ namespace WorklistThingy
 
 
                     Worklist wl = k2con.OpenWorklist(wc);
-                    Console.WriteLine("Nr {0,-9} {1,-9} {2}", "Status", "SN", "Folio");
+                    Console.WriteLine("Nr {0,-10} {1,-10} {2,-30} {3}", "Status", "SN", "AllocatedUser", "Folio");
                     int i = 0;
                     Dictionary<int, string> helperList = new Dictionary<int, string>();
                     foreach (WorklistItem wli in wl)
                     {
-                        Console.WriteLine("{0}  {1,-9} {2,-7} {3}", i, wli.Status, wli.SerialNumber, wli.ProcessInstance.Folio);
+                        Console.WriteLine("{0}  {1,-10} {2,-10} {3,-30} {4}", i, wli.Status, wli.SerialNumber, wli.AllocatedUser,  wli.ProcessInstance.Folio);
                         helperList.Add(i, wli.SerialNumber);
                         i++;
                     }
